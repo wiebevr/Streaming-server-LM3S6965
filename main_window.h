@@ -46,6 +46,7 @@ class MainWindow
         void handleRemoveButtonClicked();
         void playNext();
         void handlePlay(QString path);
+        void handleNewVideo();
 
     private:
         Ui::MainWindow ui;

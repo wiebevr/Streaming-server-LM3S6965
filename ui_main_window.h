@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'main_window.ui'
 **
-** Created: Sun Nov 28 17:01:07 2010
+** Created: Sun Nov 28 20:14:42 2010
 **      by: Qt User Interface Compiler version 4.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -20,12 +20,13 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
 #include <QtGui/QListView>
 #include <QtGui/QMainWindow>
+#include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QPushButton>
 #include <QtGui/QSlider>
+#include <QtGui/QSpinBox>
 #include <QtGui/QStatusBar>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
@@ -35,6 +36,7 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionQuit;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_2;
     QWidget *mediaPlayWidget;
@@ -43,14 +45,12 @@ public:
     QSlider *progressSlider;
     QLabel *progressLabel;
     QMenuBar *menubar;
+    QMenu *menuFile;
     QStatusBar *statusbar;
     QDockWidget *playlistWidget;
     QWidget *dockWidgetContents;
     QVBoxLayout *verticalLayout;
     QListView *playlistView;
-    QHBoxLayout *horizontalLayout_3;
-    QLineEdit *renameBox;
-    QPushButton *renameButton;
     QHBoxLayout *horizontalLayout;
     QPushButton *addFileButton;
     QPushButton *removeFileButton;
@@ -64,16 +64,18 @@ public:
     QDockWidget *streamingSettingsWidget;
     QWidget *dockWidgetContents_4;
     QFormLayout *formLayout;
-    QLabel *ipLabel;
-    QLineEdit *ipAdressBox;
-    QLabel *portLabel;
-    QLineEdit *portBox;
+    QLabel *controlPortLabel;
+    QLabel *dataPortLabel;
+    QSpinBox *controlPortBox;
+    QSpinBox *dataPortBox;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(1080, 453);
+        actionQuit = new QAction(MainWindow);
+        actionQuit->setObjectName(QString::fromUtf8("actionQuit"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout_2 = new QVBoxLayout(centralwidget);
@@ -110,6 +112,8 @@ public:
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 1080, 22));
+        menuFile = new QMenu(menubar);
+        menuFile->setObjectName(QString::fromUtf8("menuFile"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -124,21 +128,6 @@ public:
         playlistView->setObjectName(QString::fromUtf8("playlistView"));
 
         verticalLayout->addWidget(playlistView);
-
-        horizontalLayout_3 = new QHBoxLayout();
-        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
-        renameBox = new QLineEdit(dockWidgetContents);
-        renameBox->setObjectName(QString::fromUtf8("renameBox"));
-
-        horizontalLayout_3->addWidget(renameBox);
-
-        renameButton = new QPushButton(dockWidgetContents);
-        renameButton->setObjectName(QString::fromUtf8("renameButton"));
-
-        horizontalLayout_3->addWidget(renameButton);
-
-
-        verticalLayout->addLayout(horizontalLayout_3);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -191,28 +180,36 @@ public:
         dockWidgetContents_4->setObjectName(QString::fromUtf8("dockWidgetContents_4"));
         formLayout = new QFormLayout(dockWidgetContents_4);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
-        ipLabel = new QLabel(dockWidgetContents_4);
-        ipLabel->setObjectName(QString::fromUtf8("ipLabel"));
+        formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        controlPortLabel = new QLabel(dockWidgetContents_4);
+        controlPortLabel->setObjectName(QString::fromUtf8("controlPortLabel"));
 
-        formLayout->setWidget(0, QFormLayout::LabelRole, ipLabel);
+        formLayout->setWidget(2, QFormLayout::LabelRole, controlPortLabel);
 
-        ipAdressBox = new QLineEdit(dockWidgetContents_4);
-        ipAdressBox->setObjectName(QString::fromUtf8("ipAdressBox"));
+        dataPortLabel = new QLabel(dockWidgetContents_4);
+        dataPortLabel->setObjectName(QString::fromUtf8("dataPortLabel"));
 
-        formLayout->setWidget(0, QFormLayout::FieldRole, ipAdressBox);
+        formLayout->setWidget(1, QFormLayout::LabelRole, dataPortLabel);
 
-        portLabel = new QLabel(dockWidgetContents_4);
-        portLabel->setObjectName(QString::fromUtf8("portLabel"));
+        controlPortBox = new QSpinBox(dockWidgetContents_4);
+        controlPortBox->setObjectName(QString::fromUtf8("controlPortBox"));
+        controlPortBox->setMaximum(65535);
+        controlPortBox->setValue(58001);
 
-        formLayout->setWidget(1, QFormLayout::LabelRole, portLabel);
+        formLayout->setWidget(2, QFormLayout::FieldRole, controlPortBox);
 
-        portBox = new QLineEdit(dockWidgetContents_4);
-        portBox->setObjectName(QString::fromUtf8("portBox"));
+        dataPortBox = new QSpinBox(dockWidgetContents_4);
+        dataPortBox->setObjectName(QString::fromUtf8("dataPortBox"));
+        dataPortBox->setMaximum(65535);
+        dataPortBox->setValue(58002);
 
-        formLayout->setWidget(1, QFormLayout::FieldRole, portBox);
+        formLayout->setWidget(1, QFormLayout::FieldRole, dataPortBox);
 
         streamingSettingsWidget->setWidget(dockWidgetContents_4);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), streamingSettingsWidget);
+
+        menubar->addAction(menuFile->menuAction());
+        menuFile->addAction(actionQuit);
 
         retranslateUi(MainWindow);
 
@@ -222,10 +219,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
+        actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0, QApplication::UnicodeUTF8));
         progressLabel->setText(QApplication::translate("MainWindow", "xx:xx:xx/xx:xx:xx", 0, QApplication::UnicodeUTF8));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         playlistWidget->setWindowTitle(QApplication::translate("MainWindow", "Playlist", 0, QApplication::UnicodeUTF8));
-        renameBox->setText(QString());
-        renameButton->setText(QApplication::translate("MainWindow", "Rename", 0, QApplication::UnicodeUTF8));
         addFileButton->setText(QApplication::translate("MainWindow", "Add New", 0, QApplication::UnicodeUTF8));
         removeFileButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));
         mediaControlWidget->setWindowTitle(QApplication::translate("MainWindow", "Media Cotrol", 0, QApplication::UnicodeUTF8));
@@ -234,8 +231,8 @@ public:
         prevFileButton->setText(QApplication::translate("MainWindow", "Prev", 0, QApplication::UnicodeUTF8));
         nextFileButton->setText(QApplication::translate("MainWindow", "Next", 0, QApplication::UnicodeUTF8));
         streamingSettingsWidget->setWindowTitle(QApplication::translate("MainWindow", "Steaming settings", 0, QApplication::UnicodeUTF8));
-        ipLabel->setText(QApplication::translate("MainWindow", "IP adress:", 0, QApplication::UnicodeUTF8));
-        portLabel->setText(QApplication::translate("MainWindow", "Port:", 0, QApplication::UnicodeUTF8));
+        controlPortLabel->setText(QApplication::translate("MainWindow", "Port control:", 0, QApplication::UnicodeUTF8));
+        dataPortLabel->setText(QApplication::translate("MainWindow", "Port data:", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

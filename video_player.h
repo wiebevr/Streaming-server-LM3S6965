@@ -18,6 +18,8 @@ class VideoPlayer
         ~VideoPlayer();
         int getFrameCount();
         int getPosition();
+        double getCurrentTime();
+        double getTotalTime();
 
     public slots:
         void setPosition(int position);

@@ -99,3 +99,22 @@ int VideoPlayer::getFrameCount()
     else
         return (int)cvGetCaptureProperty(_stream, CV_CAP_PROP_FRAME_COUNT);
 }
+
+double VideoPlayer::getCurrentTime()
+{
+    if (!_stream)
+        return 0.0;
+    else
+        return cvGetCaptureProperty(_stream, CV_CAP_PROP_POS_MSEC);
+}
+
+double VideoPlayer::getTotalTime()
+{
+    if (!_stream)
+        return 0.0;
+    else
+    {
+        return getCurrentTime() / 
+            cvGetCaptureProperty(_stream, CV_CAP_PROP_POS_AVI_RATIO);
+    }
+}

@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include <QHBoxLayout>
 #include <QFileDialog>
+#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -67,9 +68,7 @@ void MainWindow::videoFinished()
         _itemPlaying++;
         _videoPlayer->play(
                 _playlistModel->item(_itemPlaying, 1)->text());
-        ui.playlistView->setCurrentIndex(
-                _playlistModel->item(_itemPlaying, 0)->index());
-        ui.progressSlider->setMaximum(_videoPlayer->getFrameCount());
+        handleNewVideo();
     }
     else
     {
@@ -94,6 +93,14 @@ void MainWindow::stateChanged()
     }
 }
 
+void MainWindow::handleNewVideo()
+{
+    ui.playlistView->setCurrentIndex(
+            _playlistModel->item(_itemPlaying, 0)->index());
+    ui.progressSlider->setMaximum(_videoPlayer->getFrameCount());
+
+}
+
 void MainWindow::playNext()
 {
 #if 0
@@ -109,7 +116,7 @@ void MainWindow::handlePlaylistViewDoubleClick(QModelIndex modelIndex)
     _itemPlaying = modelIndex.row();
     _playerState = PLAYING;
     stateChanged();
-    ui.progressSlider->setMaximum(_videoPlayer->getFrameCount());
+    handleNewVideo();
 }
 
 void MainWindow::handleRemoveButtonClicked()
@@ -154,7 +161,7 @@ void MainWindow::handleToggleButton()
             break;
         case STOPPED:
             _videoPlayer->play("test.mkv");
-            ui.progressSlider->setMaximum(_videoPlayer->getFrameCount());
+            handleNewVideo();
             _playerState = PLAYING;
             break;
     }    
@@ -164,11 +171,9 @@ void MainWindow::handleToggleButton()
 void MainWindow::handlePlay(QString path)
 {
     _videoPlayer->play(path);
-    ui.progressSlider->setMaximum(_videoPlayer->getFrameCount());
     _playerState = PLAYING;
-    ui.playlistView->setCurrentIndex(
-            _playlistModel->getIndexForPath(path));
     stateChanged();
+    handleNewVideo();
 }
 
 void MainWindow::timerEvent(QTimerEvent *)
@@ -176,4 +181,15 @@ void MainWindow::timerEvent(QTimerEvent *)
     ui.progressSlider->blockSignals(true);
     ui.progressSlider->setValue(_videoPlayer->getPosition());
     ui.progressSlider->blockSignals(false);
+
+    QTime current = QTime(0, 0);
+    current = current.addMSecs((int) _videoPlayer->getCurrentTime());
+    QTime total = QTime(0, 0);
+    total = total.addMSecs((int) _videoPlayer->getTotalTime());
+    if (_videoPlayer->getTotalTime() > 0)
+        ui.progressLabel->setText(QString("%1 / %2").
+                arg(current.toString("hh:mm:ss")).
+                arg(total.toString("hh:mm:ss")));
+    else
+        ui.progressLabel->setText(current.toString("hh:mm:ss"));
 }

@@ -55,6 +55,13 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="playlistWidget">
@@ -68,24 +75,6 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QListView" name="playlistView"/>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLineEdit" name="renameBox">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="renameButton">
-         <property name="text">
-          <string>Rename</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -157,29 +146,51 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
     <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="ipLabel">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="2" column="0">
+      <widget class="QLabel" name="controlPortLabel">
        <property name="text">
-        <string>IP adress:</string>
+        <string>Port control:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="ipAdressBox"/>
-     </item>
      <item row="1" column="0">
-      <widget class="QLabel" name="portLabel">
+      <widget class="QLabel" name="dataPortLabel">
        <property name="text">
-        <string>Port:</string>
+        <string>Port data:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="controlPortBox">
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="value">
+        <number>58001</number>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="portBox"/>
+      <widget class="QSpinBox" name="dataPortBox">
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="value">
+        <number>58002</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
   </widget>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
