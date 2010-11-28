@@ -4,11 +4,15 @@
 #include <QMainWindow>
 #include <QGLWidget>
 #include <QStandardItemModel>
+#include <QStringListModel>
+#include <QMap>
+#include <QString>
 
 #include "ui_main_window.h"
 #include "video_viewer.h"
 #include "video_player.h"
 #include "video_streamer.h"
+#include "playlist_model.h"
 
 class MainWindow
     : public QMainWindow
@@ -25,6 +29,9 @@ class MainWindow
     public:
         MainWindow(QWidget *parent = 0);
         ~MainWindow();
+
+    public slots:
+//        void playlistChanged();
     
     protected:
         void timerEvent(QTimerEvent *event);
@@ -38,6 +45,7 @@ class MainWindow
         void handlePlaylistViewDoubleClick(QModelIndex modelIndex);
         void handleRemoveButtonClicked();
         void playNext();
+        void handlePlay(QString path);
 
     private:
         Ui::MainWindow ui;
@@ -48,7 +56,8 @@ class MainWindow
         VideoStreamer *_videoStreamer;
 
         PlayerState _playerState;
-        QStandardItemModel *_playlistModel;
+        PlaylistModel *_playlistModel;
+
         int _itemPlaying;
 };
 #endif //MAIN_WINDOW_H

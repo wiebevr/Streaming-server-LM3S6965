@@ -68,7 +68,6 @@ void VideoPlayer::play(QString fileName)
     if (_stream)
         cvReleaseCapture(&_stream);
     _stream = cvCreateFileCapture(fileName.toAscii());
-    emit newVideo();
     resume();
 }
 

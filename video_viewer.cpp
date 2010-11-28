@@ -35,13 +35,11 @@ void VideoViewer::initializeGL()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,     GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,     GL_CLAMP_TO_EDGE);
 
-    qDebug() << _textureId;
-
 }
 
 void VideoViewer::paintGL()
 {
-    qglClearColor(Qt::red);
+    qglClearColor(Qt::black);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
@@ -65,12 +63,6 @@ void VideoViewer::paintGL()
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     _shaderProgram->disableAttributeArray("position");
-}
-
-void VideoViewer::updateAspectRatio()
-{
-    resizeGL(width(), height());
-    qDebug() << "update AA";
 }
 
 void VideoViewer::resizeGL(int width, int height)
@@ -112,7 +104,16 @@ void VideoViewer::resizeGL(int width, int height)
 
 void VideoViewer::updateTexture(IplImage *frame)
 {
+    static int prevWidth, prevHeight;
+
     _frame = frame;
+
+    if (prevWidth != _frame->width || prevHeight != _frame->height)
+        resizeGL(width(), height());
+
+    prevWidth = _frame->width;
+    prevHeight = _frame->height;
+
     updateGL();
 }
 

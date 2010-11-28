@@ -22,7 +22,6 @@ class VideoViewer
 
     public slots:
         void updateTexture(IplImage *frame);
-        void updateAspectRatio();
 
     protected:
         void initializeGL();

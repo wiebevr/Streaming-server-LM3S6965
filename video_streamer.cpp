@@ -1,8 +1,10 @@
 #include "video_streamer.h"
+#include <QRegExp>
+#include <QModelIndex>
 #define CONTROL_SERVER_PORT 58001
 #define DATA_SERVER_PORT 58002
 
-VideoStreamer::VideoStreamer(QObject *parent)
+VideoStreamer::VideoStreamer(PlaylistModel *playlistModel, QObject *parent)
     : QObject(parent)
 {
     _controlSocket = NULL;
@@ -11,6 +13,8 @@ VideoStreamer::VideoStreamer(QObject *parent)
     _controlServer = new QTcpServer(this);   
     _dataServer = new QTcpServer(this);   
 
+    _playlistModel = playlistModel;
+
     _controlServer->listen(QHostAddress::Any, CONTROL_SERVER_PORT);
     _dataServer->listen(QHostAddress::Any, DATA_SERVER_PORT);
 
@@ -18,10 +22,74 @@ VideoStreamer::VideoStreamer(QObject *parent)
             this, SLOT(newControlConnection()));
     connect(_dataServer, SIGNAL(newConnection()),
             this, SLOT(newDataConnection()));
+    
 }
 
 VideoStreamer::~VideoStreamer()
 {
+}
+
+void VideoStreamer::readNewData()
+{
+    QString recvData = _controlSocket->readLine();
+    if (recvData.size() == 0)
+    {
+        qDebug() << "readyRead() emmitted but no data read.";
+        return;
+    }
+
+    if (recvData.startsWith("toggle"))
+    {
+        emit toggle();
+        _controlSocket->write("OK\n");
+    }
+    else if (recvData.startsWith("stop"))
+    {
+        emit stop();
+        _controlSocket->write("OK\n");
+    }
+    else if (recvData.startsWith("next"))
+    {
+        emit next();
+        _controlSocket->write("OK\n");
+    }
+    else if (recvData.startsWith("prev"))
+    {
+        emit prev();
+        _controlSocket->write("OK\n");
+    }
+    else if (recvData.startsWith("play"))
+    {
+        QString path = _playlistModel->nameForPath(
+                recvData.section(QRegExp("\\s+"), 1, 1));
+        if (path.isEmpty())
+        {
+            _controlSocket->write("NOK\n");
+        }
+        else
+        {
+            emit play(path);
+            _controlSocket->write("OK\n");
+        }
+    }
+    else if (recvData.startsWith("remove"))
+    {
+        if (_playlistModel->removeByName(
+                    recvData.section(QRegExp("\\s+"), 1, 1)))
+            _controlSocket->write("OK\n");
+        else
+            _controlSocket->write("NOK\n");
+    }
+    else if (recvData.startsWith("getplaylist"))
+    {
+        for (int i = 0; i < _playlistModel->getNames().count(); ++i)
+        {
+            _controlSocket->write(_playlistModel->getNames()[i].toAscii());
+            _controlSocket->write("\n");
+        }
+        _controlSocket->write("OK\n");
+    }
+    
 }
 
 void VideoStreamer::newDataConnection()
@@ -31,7 +99,9 @@ void VideoStreamer::newDataConnection()
 
 void VideoStreamer::newControlConnection()
 {
-
+    _controlSocket = _controlServer->nextPendingConnection();
+    connect(_controlSocket, SIGNAL(readyRead()),
+            this, SLOT(readNewData()));
 }
 
 void VideoStreamer::sendFrame(IplImage *frame)

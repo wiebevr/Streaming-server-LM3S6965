@@ -7,12 +7,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui.setupUi(this);
     _playerState = STOPPED;
+    _playlistModel = new PlaylistModel(this);
     
     _inputVideoWidget = new VideoViewer(this);
     _outputVideoWidget = new VideoViewer(this);
-    _videoStreamer = new VideoStreamer(this);
     _videoPlayer = new VideoPlayer(this);
-    _playlistModel = new QStandardItemModel(this);
+    _videoStreamer = new VideoStreamer(_playlistModel, this);
 
     ui.mediaPlayWidget->setLayout(new QHBoxLayout());
     ui.mediaPlayWidget->layout()->addWidget(_inputVideoWidget);
@@ -43,10 +43,15 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(handlePlaylistViewDoubleClick(QModelIndex)));
     connect(ui.removeFileButton, SIGNAL(clicked()),
             this, SLOT(handleRemoveButtonClicked()));
-    connect(_videoPlayer, SIGNAL(newVideo()),
-            _inputVideoWidget, SLOT(updateAspectRatio()));
-    connect(_videoPlayer, SIGNAL(newVideo()),
-            _outputVideoWidget, SLOT(updateAspectRatio()));
+
+    connect(_videoStreamer, SIGNAL(toggle()),
+            this, SLOT(handleToggleButton()));
+    connect(_videoStreamer, SIGNAL(stop()),
+            this, SLOT(handleStopButton()));
+    connect(_videoStreamer, SIGNAL(play(QString)),
+            this, SLOT(handlePlay(QString))); 
+    connect(_videoStreamer, SIGNAL(next()),
+            this, SLOT(playNext()));
     stateChanged();
     startTimer(500);
 }
@@ -153,6 +158,16 @@ void MainWindow::handleToggleButton()
             _playerState = PLAYING;
             break;
     }    
+    stateChanged();
+}
+
+void MainWindow::handlePlay(QString path)
+{
+    _videoPlayer->play(path);
+    ui.progressSlider->setMaximum(_videoPlayer->getFrameCount());
+    _playerState = PLAYING;
+    ui.playlistView->setCurrentIndex(
+            _playlistModel->getIndexForPath(path));
     stateChanged();
 }
 

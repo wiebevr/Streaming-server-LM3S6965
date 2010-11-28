@@ -20,13 +20,15 @@ RCC_DIR = ./build
 HEADERS += main_window.h \
            video_viewer.h \
            video_player.h \
-           video_streamer.h
+           video_streamer.h \
+           playlist_model.h
 
 SOURCES += main.cpp \
            main_window.cpp \
            video_viewer.cpp \
            video_player.cpp \
-           video_streamer.cpp
+           video_streamer.cpp \
+           playlist_model.cpp
 
 FORMS += main_window.ui 
 
