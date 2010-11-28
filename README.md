@@ -10,6 +10,7 @@ Control Protocol Description
 All commands will answer OK if successful or NOK if not successful. Unless 
 otherwise specified. 
 All commands should be ended by a single "\n".
+
 * toggle: Will play or pause video depending on the current state.
 * stop: Stop playing video. Current video cannot be resumed. 
 * play <name>: Will play a file with the specified name.
