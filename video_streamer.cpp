@@ -13,6 +13,9 @@ VideoStreamer::VideoStreamer(PlaylistModel *playlistModel, QObject *parent)
 
     _playlistModel = playlistModel;
 
+    _controlPort = 58001;
+    _dataPort = 58002;
+
     _controlServer->listen(QHostAddress::Any, _controlPort);
     _dataServer->listen(QHostAddress::Any, _dataPort);
 
@@ -59,7 +62,7 @@ void VideoStreamer::readNewData()
     else if (recvData.startsWith("play"))
     {
         QString path = _playlistModel->nameForPath(
-                recvData.section(QRegExp("\\s+"), 1));
+                recvData.section(QRegExp("\\s+"), 1, 1));
         if (path.isEmpty())
         {
             _controlSocket->write("NOK\n");
@@ -73,7 +76,7 @@ void VideoStreamer::readNewData()
     else if (recvData.startsWith("remove"))
     {
         if (_playlistModel->removeByName(
-                    recvData.section(QRegExp("\\s+"), 1)))
+                    recvData.section(QRegExp("\\s+"), 1, 1)))
             _controlSocket->write("OK\n");
         else
             _controlSocket->write("NOK\n");
@@ -127,5 +130,5 @@ void VideoStreamer::setDataPort(int port)
 {
     _dataServer->close();
     _dataPort = port;
-    _dataServer->listen(QHostAddress::Any, _controlPort);
+    _dataServer->listen(QHostAddress::Any, _dataPort);
 }
