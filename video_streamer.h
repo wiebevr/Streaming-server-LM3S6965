@@ -26,6 +26,8 @@ class VideoStreamer
 
     public slots:
         void sendFrame(IplImage *frame); 
+        void setControlPort(int port);
+        void setDataPort(int port);
 
     private slots:
         void newDataConnection();
@@ -38,6 +40,9 @@ class VideoStreamer
 
         QTcpSocket *_controlSocket;
         QTcpSocket *_dataSocket;
+
+        int _controlPort;
+        int _dataPort;
 
         PlaylistModel *_playlistModel;
 

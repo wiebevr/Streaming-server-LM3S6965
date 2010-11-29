@@ -53,6 +53,12 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(handlePlay(QString))); 
     connect(_videoStreamer, SIGNAL(next()),
             this, SLOT(playNext()));
+
+    connect(ui.controlPortBox, SIGNAL(valueChanged(int)),
+            _videoStreamer, SLOT(setControlPort(int)));
+    connect(ui.dataPortBox, SIGNAL(valueChanged(int)),
+            _videoStreamer, SLOT(setDataPort(int)));
+
     stateChanged();
     startTimer(500);
 }

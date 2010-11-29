@@ -1,8 +1,6 @@
 #include "video_streamer.h"
 #include <QRegExp>
 #include <QModelIndex>
-#define CONTROL_SERVER_PORT 58001
-#define DATA_SERVER_PORT 58002
 
 VideoStreamer::VideoStreamer(PlaylistModel *playlistModel, QObject *parent)
     : QObject(parent)
@@ -15,8 +13,8 @@ VideoStreamer::VideoStreamer(PlaylistModel *playlistModel, QObject *parent)
 
     _playlistModel = playlistModel;
 
-    _controlServer->listen(QHostAddress::Any, CONTROL_SERVER_PORT);
-    _dataServer->listen(QHostAddress::Any, DATA_SERVER_PORT);
+    _controlServer->listen(QHostAddress::Any, _controlPort);
+    _dataServer->listen(QHostAddress::Any, _dataPort);
 
     connect(_controlServer, SIGNAL(newConnection()), 
             this, SLOT(newControlConnection()));
@@ -61,7 +59,7 @@ void VideoStreamer::readNewData()
     else if (recvData.startsWith("play"))
     {
         QString path = _playlistModel->nameForPath(
-                recvData.section(QRegExp("\\s+"), 1, 1));
+                recvData.section(QRegExp("\\s+"), 1));
         if (path.isEmpty())
         {
             _controlSocket->write("NOK\n");
@@ -75,7 +73,7 @@ void VideoStreamer::readNewData()
     else if (recvData.startsWith("remove"))
     {
         if (_playlistModel->removeByName(
-                    recvData.section(QRegExp("\\s+"), 1, 1)))
+                    recvData.section(QRegExp("\\s+"), 1)))
             _controlSocket->write("OK\n");
         else
             _controlSocket->write("NOK\n");
@@ -118,3 +116,16 @@ void VideoStreamer::sendFrame(IplImage *frame)
     qDebug() << _dataSocket->write(buffer, 64 * 96);
 }
 
+void VideoStreamer::setControlPort(int port)
+{
+    _controlServer->close();
+    _controlPort = port;
+    _controlServer->listen(QHostAddress::Any, _controlPort);
+}
+
+void VideoStreamer::setDataPort(int port)
+{
+    _dataServer->close();
+    _dataPort = port;
+    _dataServer->listen(QHostAddress::Any, _controlPort);
+}

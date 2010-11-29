@@ -10,7 +10,7 @@ VideoViewer::VideoViewer(QWidget *parent)
     : QGLWidget(parent)
 {
     _shaderProgram = NULL;
-    _frame = cvLoadImage("Tux.png");
+    _frame = cvCreateImage(cvSize(1, 1), 8, 1);
 }
 
 VideoViewer::~VideoViewer()
