@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui.setupUi(this);
     _playerState = STOPPED;
+    _itemPlaying = -1;
     _playlistModel = new PlaylistModel(this);
     
     _inputVideoWidget = new VideoViewer(this);
@@ -44,15 +45,23 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(handlePlaylistViewDoubleClick(QModelIndex)));
     connect(ui.removeFileButton, SIGNAL(clicked()),
             this, SLOT(handleRemoveButtonClicked()));
+    connect(ui.nextFileButton, SIGNAL(clicked()),
+            this, SLOT(playNextButton()));
+    connect(ui.prevFileButton, SIGNAL(clicked()),
+            this, SLOT(playPrevButton()));
 
     connect(_videoStreamer, SIGNAL(toggle()),
-            this, SLOT(handleToggleButton()));
+            this, SLOT(handleToggleCommand()));
     connect(_videoStreamer, SIGNAL(stop()),
-            this, SLOT(handleStopButton()));
+            this, SLOT(handleStopCommand()));
     connect(_videoStreamer, SIGNAL(play(QString)),
             this, SLOT(handlePlay(QString))); 
     connect(_videoStreamer, SIGNAL(next()),
-            this, SLOT(playNext()));
+            this, SLOT(playNextCommand()));
+    connect(_videoStreamer, SIGNAL(prev()),
+            this, SLOT(playPrevCommand()));
+    connect(_videoStreamer, SIGNAL(remove(QString)),
+            this, SLOT(handleRemoveCommand(QString)));
 
     connect(ui.controlPortBox, SIGNAL(valueChanged(int)),
             _videoStreamer, SLOT(setControlPort(int)));
@@ -107,13 +116,58 @@ void MainWindow::handleNewVideo()
 
 }
 
-void MainWindow::playNext()
+void MainWindow::playNextButton()
 {
-#if 0
-    if (_itemPlayin < _playlistModel->rowCount() -1) 
-        _videoPlayer->play(
-                _playlistModel->item(itemPlaying, 1)
-#endif
+    if (_playlistModel->rowCount() - 1 > _itemPlaying && _itemPlaying >= 0)
+    {
+        _videoPlayer->play(_playlistModel->getPathForId(++_itemPlaying));
+        _playerState = PLAYING;
+        stateChanged();
+        handleNewVideo();
+    }
+}
+
+void MainWindow::playNextCommand()
+{
+    if (_playlistModel->rowCount() - 1 > _itemPlaying && _itemPlaying >= 0)
+    {
+        _videoPlayer->play(_playlistModel->getPathForId(++_itemPlaying));
+        _playerState = PLAYING;
+        stateChanged();
+        handleNewVideo();
+        _videoStreamer->controlResponse(true);
+    }
+    else
+    {
+        _videoStreamer->controlResponse(false);
+    }
+}
+
+void MainWindow::playPrevButton()
+{
+    if (_playlistModel->rowCount() > _itemPlaying && _itemPlaying > 0)
+    {
+        _videoPlayer->play(_playlistModel->getPathForId(--_itemPlaying));
+        _playerState = PLAYING;
+        stateChanged();
+        handleNewVideo();
+    }
+}
+
+void MainWindow::playPrevCommand()
+{
+    if (_playlistModel->rowCount() > _itemPlaying && _itemPlaying > 0)
+    {
+        _videoPlayer->play(_playlistModel->getPathForId(--_itemPlaying));
+        _playerState = PLAYING;
+        stateChanged();
+        handleNewVideo();
+        _videoStreamer->controlResponse(true);
+    }
+    else
+    {
+        _videoStreamer->controlResponse(false);
+    }
 }
 
 void MainWindow::handlePlaylistViewDoubleClick(QModelIndex modelIndex)
@@ -128,6 +182,20 @@ void MainWindow::handlePlaylistViewDoubleClick(QModelIndex modelIndex)
 void MainWindow::handleRemoveButtonClicked()
 {
     _playlistModel->removeRow(ui.playlistView->currentIndex().row());
+}
+
+void MainWindow::handleRemoveCommand(QString name)
+{
+    int id = _playlistModel->getIdForName(name);
+    if (_itemPlaying == id)
+    {
+        handleStopButton();
+    }
+    if (_itemPlaying > id)
+    {
+        --_itemPlaying;
+    }
+    _videoStreamer->controlResponse(_playlistModel->removeByName(name));
 }
 
 void MainWindow::handleFileButton()
@@ -147,9 +215,27 @@ void MainWindow::handleFileButton()
 
 void MainWindow::handleStopButton()
 {
-    _videoPlayer->stop();
-    _playerState = STOPPED;
-    stateChanged();
+    if (_playerState == PAUSED || _playerState == PLAYING)
+    {
+        _videoPlayer->stop();
+        _playerState = STOPPED;
+        stateChanged();
+    }
+}
+
+void MainWindow::handleStopCommand()
+{
+    if (_playerState == PAUSED || _playerState == PLAYING)
+    {
+        _videoPlayer->stop();
+        _playerState = STOPPED;
+        stateChanged();
+        _videoStreamer->controlResponse(true);
+    }
+    else
+    {
+        _videoStreamer->controlResponse(false);
+    }
 }
 
 void MainWindow::handleToggleButton()
@@ -174,8 +260,31 @@ void MainWindow::handleToggleButton()
     stateChanged();
 }
 
+void MainWindow::handleToggleCommand()
+{
+    qDebug() << "toggleButton";
+    switch (_playerState)
+    {
+        case PLAYING:
+            _videoPlayer->pause();
+            _playerState = PAUSED;
+            _videoStreamer->controlResponse(true);
+            stateChanged();
+            break;
+        case PAUSED:
+            _videoPlayer->resume();
+            _playerState = PLAYING;
+            _videoStreamer->controlResponse(true);
+            stateChanged();
+            break;
+        default:
+            _videoStreamer->controlResponse(false);
+    }    
+}
+
 void MainWindow::handlePlay(QString path)
 {
+    _itemPlaying = _playlistModel->getPaths().indexOf(path);
     _videoPlayer->play(path);
     _playerState = PLAYING;
     stateChanged();

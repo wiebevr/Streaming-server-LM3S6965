@@ -28,6 +28,7 @@ class VideoStreamer
         void sendFrame(IplImage *frame); 
         void setControlPort(int port);
         void setDataPort(int port);
+        void controlResponse(bool success);
 
     private slots:
         void newDataConnection();

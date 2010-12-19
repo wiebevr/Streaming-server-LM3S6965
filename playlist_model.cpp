@@ -46,6 +46,20 @@ bool PlaylistModel::removeByName(QString name)
     return removeRow(index);
 }
 
+QString PlaylistModel::getPathForId(int id)
+{
+    if (id >= rowCount())
+        return QString::Null();
+    
+    return item(id, 1)->text();
+
+}
+
+int PlaylistModel::getIdForName(QString name)
+{
+    return getNames().indexOf(name);
+}
+
 QModelIndex PlaylistModel::getIndexForPath(QString path)
 {
     return indexFromItem(item(getPaths().indexOf(path)));

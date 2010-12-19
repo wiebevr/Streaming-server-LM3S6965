@@ -8,9 +8,9 @@ DEPENDPATH += .
 INCLUDEPATH += . \
              /usr/include/opencv
 
-LIBS += -lcv -lcxcore -lcvaux -lhighgui
+LIBS += -lopencv_core -lopencv_highgui
 
-QT += opengl network
+QT += opengl network phonon
 
 OBJECTS_DIR = ./build
 MOC_DIR = ./build
@@ -21,14 +21,14 @@ HEADERS += main_window.h \
            video_viewer.h \
            video_player.h \
            video_streamer.h \
-           playlist_model.h
+           playlist_model.h \
 
 SOURCES += main.cpp \
            main_window.cpp \
            video_viewer.cpp \
            video_player.cpp \
            video_streamer.cpp \
-           playlist_model.cpp
+           playlist_model.cpp \
 
 FORMS += main_window.ui 
 

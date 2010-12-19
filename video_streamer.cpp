@@ -42,22 +42,18 @@ void VideoStreamer::readNewData()
     if (recvData.startsWith("toggle"))
     {
         emit toggle();
-        _controlSocket->write("OK\n");
     }
     else if (recvData.startsWith("stop"))
     {
         emit stop();
-        _controlSocket->write("OK\n");
     }
     else if (recvData.startsWith("next"))
     {
         emit next();
-        _controlSocket->write("OK\n");
     }
     else if (recvData.startsWith("prev"))
     {
         emit prev();
-        _controlSocket->write("OK\n");
     }
     else if (recvData.startsWith("play"))
     {
@@ -75,11 +71,7 @@ void VideoStreamer::readNewData()
     }
     else if (recvData.startsWith("remove"))
     {
-        if (_playlistModel->removeByName(
-                    recvData.section(QRegExp("\\s+"), 1, 1)))
-            _controlSocket->write("OK\n");
-        else
-            _controlSocket->write("NOK\n");
+        emit remove(recvData.section(QRegExp("\\s+"), 1, 1));
     }
     else if (recvData.startsWith("getplaylist"))
     {
@@ -89,6 +81,10 @@ void VideoStreamer::readNewData()
             _controlSocket->write("\n");
         }
         _controlSocket->write("OK\n");
+    }
+    else
+    {
+        _controlSocket->write("NOK\n");
     }
     
 }
@@ -103,6 +99,14 @@ void VideoStreamer::newControlConnection()
     _controlSocket = _controlServer->nextPendingConnection();
     connect(_controlSocket, SIGNAL(readyRead()),
             this, SLOT(readNewData()));
+}
+
+void VideoStreamer::controlResponse(bool success)
+{
+    if (_controlSocket && _controlSocket->isOpen())
+    {
+        _controlSocket->write( success ? "OK\n" : "NOK\n");
+    }
 }
 
 void VideoStreamer::sendFrame(IplImage *frame)

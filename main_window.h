@@ -40,12 +40,20 @@ class MainWindow
         void handleToggleButton();
         void handleStopButton();
         void handleFileButton();
+        void handleRemoveButtonClicked();
+        void handlePlay(QString path);
+        void playNextButton();
+        void playPrevButton();
+        
+        void handleToggleCommand();
+        void handleStopCommand();
+        void handleRemoveCommand(QString name);
+        void playNextCommand();
+        void playPrevCommand();
+
         void stateChanged();
         void videoFinished();
         void handlePlaylistViewDoubleClick(QModelIndex modelIndex);
-        void handleRemoveButtonClicked();
-        void playNext();
-        void handlePlay(QString path);
         void handleNewVideo();
 
     private:

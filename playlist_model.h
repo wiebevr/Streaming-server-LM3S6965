@@ -20,6 +20,8 @@ class PlaylistModel
         QString nameForPath(QString name);
         bool removeByName(QString name);
         QModelIndex getIndexForPath(QString path);
+        QString getPathForId(int id);
+        int getIdForName(QString name);
 
 };
 #endif // PLAYLIST_MODEL_H
