@@ -43,6 +43,10 @@ void VideoStreamer::readNewData()
     {
         emit toggle();
     }
+    else if (recvData.startsWith("keep_alive"))
+    {
+        _controlSocket->write("OK\n");
+    }
     else if (recvData.startsWith("stop"))
     {
         emit stop();
