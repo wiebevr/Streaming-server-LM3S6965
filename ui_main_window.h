@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'main_window.ui'
 **
-** Created: Sun Dec 19 19:30:57 2010
+** Created: Sat Jan 22 23:00:40 2011
 **      by: Qt User Interface Compiler version 4.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -37,6 +37,7 @@ class Ui_MainWindow
 {
 public:
     QAction *actionQuit;
+    QAction *actionAbout;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_2;
     QWidget *mediaPlayWidget;
@@ -46,6 +47,7 @@ public:
     QLabel *progressLabel;
     QMenuBar *menubar;
     QMenu *menuFile;
+    QMenu *menuHelp;
     QStatusBar *statusbar;
     QDockWidget *playlistWidget;
     QWidget *dockWidgetContents;
@@ -76,6 +78,8 @@ public:
         MainWindow->resize(1080, 453);
         actionQuit = new QAction(MainWindow);
         actionQuit->setObjectName(QString::fromUtf8("actionQuit"));
+        actionAbout = new QAction(MainWindow);
+        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout_2 = new QVBoxLayout(centralwidget);
@@ -111,9 +115,11 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1080, 22));
+        menubar->setGeometry(QRect(0, 0, 1080, 20));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
+        menuHelp = new QMenu(menubar);
+        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -209,19 +215,24 @@ public:
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), streamingSettingsWidget);
 
         menubar->addAction(menuFile->menuAction());
+        menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionQuit);
+        menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
+        QObject::connect(actionQuit, SIGNAL(triggered()), MainWindow, SLOT(close()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Video Streamer", 0, QApplication::UnicodeUTF8));
         actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0, QApplication::UnicodeUTF8));
+        actionAbout->setText(QApplication::translate("MainWindow", "About", 0, QApplication::UnicodeUTF8));
         progressLabel->setText(QApplication::translate("MainWindow", "xx:xx:xx/xx:xx:xx", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
         playlistWidget->setWindowTitle(QApplication::translate("MainWindow", "Playlist", 0, QApplication::UnicodeUTF8));
         addFileButton->setText(QApplication::translate("MainWindow", "Add New", 0, QApplication::UnicodeUTF8));
         removeFileButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));

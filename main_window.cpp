@@ -1,7 +1,9 @@
 #include "main_window.h"
+
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QTime>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -49,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(playNextButton()));
     connect(ui.prevFileButton, SIGNAL(clicked()),
             this, SLOT(playPrevButton()));
+    connect(ui.actionAbout, SIGNAL(triggered()),
+            this, SLOT(actionAboutClicked()));
 
     connect(_videoStreamer, SIGNAL(toggle()),
             this, SLOT(handleToggleCommand()));
@@ -307,4 +311,16 @@ void MainWindow::timerEvent(QTimerEvent *)
                 arg(total.toString("hh:mm:ss")));
     else
         ui.progressLabel->setText(current.toString("hh:mm:ss"));
+}
+
+void MainWindow::actionAboutClicked()
+{
+    QMessageBox::about(this, QString("About Video Streamer"), QString(
+                "<h1>Video Streamer</h1>"
+                "<p>This application is designed to first covert the video to 4 bit grey scale, resolution 128x96. "
+                "And then stream it to the LM3S6965 Ethernet Evaluation Board, that will render the video on the screen.</p>"
+                "<p>It uses OpenCL to convert to video, and Qt to draw the interface. The video in the application "
+                "is rendered using OpenGL.</p>"
+                "<p>This software is part of a project for an Embedded Software course at the De Nayer institute.</p>"
+                "<p>Created by Wiebe Van Ranst - wiebevr@gmail.com</p>")); 
 }

@@ -44,6 +44,8 @@ class MainWindow
         void handlePlay(QString path);
         void playNextButton();
         void playPrevButton();
+
+        void actionAboutClicked();
         
         void handleToggleCommand();
         void handleStopCommand();
