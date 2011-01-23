@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'main_window.ui'
 **
-** Created: Sat Jan 22 23:00:40 2011
+** Created: Sun Jan 23 15:18:06 2011
 **      by: Qt User Interface Compiler version 4.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -56,6 +56,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QPushButton *addFileButton;
     QPushButton *removeFileButton;
+    QPushButton *cameraButton;
     QDockWidget *mediaControlWidget;
     QWidget *dockWidgetContents_3;
     QGridLayout *gridLayout;
@@ -150,6 +151,12 @@ public:
 
         verticalLayout->addLayout(horizontalLayout);
 
+        cameraButton = new QPushButton(dockWidgetContents);
+        cameraButton->setObjectName(QString::fromUtf8("cameraButton"));
+        cameraButton->setCheckable(false);
+
+        verticalLayout->addWidget(cameraButton);
+
         playlistWidget->setWidget(dockWidgetContents);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), playlistWidget);
         mediaControlWidget = new QDockWidget(MainWindow);
@@ -236,6 +243,7 @@ public:
         playlistWidget->setWindowTitle(QApplication::translate("MainWindow", "Playlist", 0, QApplication::UnicodeUTF8));
         addFileButton->setText(QApplication::translate("MainWindow", "Add New", 0, QApplication::UnicodeUTF8));
         removeFileButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));
+        cameraButton->setText(QApplication::translate("MainWindow", "Camera", 0, QApplication::UnicodeUTF8));
         mediaControlWidget->setWindowTitle(QApplication::translate("MainWindow", "Media Cotrol", 0, QApplication::UnicodeUTF8));
         toggleButton->setText(QApplication::translate("MainWindow", "Play", 0, QApplication::UnicodeUTF8));
         stopButton->setText(QApplication::translate("MainWindow", "Stop", 0, QApplication::UnicodeUTF8));

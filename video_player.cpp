@@ -60,7 +60,18 @@ void VideoPlayer::pause()
 void VideoPlayer::resume()
 {
     double frameRate = cvGetCaptureProperty(_stream, CV_CAP_PROP_FPS);
-    _frameRateTimer->start(qRound((1.0 / frameRate) * 1000.0));
+    if (frameRate == -1)
+        _frameRateTimer->start(qRound((1.0 / 30.0) * 1000.0));
+    else
+        _frameRateTimer->start(qRound((1.0 / frameRate) * 1000.0));
+}
+
+void VideoPlayer::playCamera(int cameraId)
+{
+    if (_stream)
+        cvReleaseCapture(&_stream);
+    _stream = cvCreateCameraCapture(cameraId);
+    resume();
 }
 
 void VideoPlayer::play(QString fileName)

@@ -25,6 +25,7 @@ class VideoPlayer
         void setPosition(int position);
         void pause();
         void resume();
+        void playCamera(int cameraId = -1);
         void play(QString fileName);
         void stop();
 

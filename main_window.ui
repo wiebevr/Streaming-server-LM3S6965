@@ -101,6 +101,16 @@
        </item>
       </layout>
      </item>
+     <item>
+      <widget class="QPushButton" name="cameraButton">
+       <property name="text">
+        <string>Camera</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>

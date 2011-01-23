@@ -44,6 +44,7 @@ class MainWindow
         void handlePlay(QString path);
         void playNextButton();
         void playPrevButton();
+        void handleCameraButton(bool state);
 
         void actionAboutClicked();
         
