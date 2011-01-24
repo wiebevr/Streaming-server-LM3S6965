@@ -68,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(playPrevCommand()));
     connect(_videoStreamer, SIGNAL(remove(QString)),
             this, SLOT(handleRemoveCommand(QString)));
+    connect(_videoStreamer, SIGNAL(camera()),
+            this, SLOT(handleCameraCommand()));
 
     connect(ui.controlPortBox, SIGNAL(valueChanged(int)),
             _videoStreamer, SLOT(setControlPort(int)));
@@ -327,9 +329,16 @@ void MainWindow::actionAboutClicked()
                 "<p>Created by Wiebe Van Ranst - wiebevr@gmail.com</p>")); 
 }
 
-void MainWindow::handleCameraButton(bool state)
+void MainWindow::handleCameraButton(bool)
 {
     _videoPlayer->playCamera(-1);
     _playerState = PLAYING;
     stateChanged();
+}
+
+void MainWindow::handleCameraCommand()
+{
+    handleCameraButton(true);
+    _videoStreamer->controlResponse(true);
+
 }

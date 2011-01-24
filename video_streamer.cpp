@@ -59,6 +59,10 @@ void VideoStreamer::readNewData()
     {
         emit prev();
     }
+    else if (recvData.startsWith("camera"))
+    {
+        emit camera();
+    }
     else if (recvData.startsWith("play"))
     {
         QString path = _playlistModel->nameForPath(
@@ -90,6 +94,7 @@ void VideoStreamer::readNewData()
     {
         _controlSocket->write("NOK\n");
     }
+    qDebug() << "Recieved:" << recvData;
     
 }
 

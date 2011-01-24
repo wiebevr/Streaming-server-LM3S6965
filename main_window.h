@@ -53,6 +53,7 @@ class MainWindow
         void handleRemoveCommand(QString name);
         void playNextCommand();
         void playPrevCommand();
+        void handleCameraCommand();
 
         void stateChanged();
         void videoFinished();

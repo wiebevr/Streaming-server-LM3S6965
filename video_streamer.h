@@ -23,6 +23,7 @@ class VideoStreamer
         void next();
         void prev();
         void remove(QString name);
+        void camera();
 
     public slots:
         void sendFrame(IplImage *frame); 
